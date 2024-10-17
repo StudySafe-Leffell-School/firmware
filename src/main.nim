@@ -1,5 +1,26 @@
+import std/strformat
+
+import ./state
+
+import ./hal/serial
+import ./hal/time
+
+
+## Initialize global state variables for FFI.
+
+var globalStateValue: State = State(data: 10)
+var globalState* {. exportcpp: "state" .}: ptr State = globalStateValue.addr
+
+
 proc setup*() =
-  discard "setup"
- 
+  ## Hardware initialization and setup; runs once on boot.
+
+  serial.start(9600)
+
+  serial.printOnNewLine(&"Hello, World! I'm alive! State is {globalState.data}.")
+
 proc loop*() =
-  discard "setup"
+  ## Main loop; repeats indefinitely.
+
+  serial.printOnNewLine(&"Hello, World! I've been awake for {$(time.getUpTimeMillis() div 1000)} seconds! State is {globalState.data}.")
+  time.sleep(1000)

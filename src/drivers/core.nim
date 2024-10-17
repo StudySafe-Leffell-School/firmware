@@ -1,14 +1,16 @@
-{.push importc, header: "HardwareSerial.h".}
+{.push importcpp, header: "HardwareSerial.h".}
 type
-  HardwareSerial* {.importcpp: "HardwareSerial",  bycopy.} = object
+  HardwareSerial* {.importcpp: "HardwareSerial".} = object
 
-var Serial* {.importcpp: "Serial".}: HardwareSerial
-proc begin*(self: var HardwareSerial; baud: cint)
-proc available*(self: var HardwareSerial): cint
-proc read*(self: var HardwareSerial): cint
-proc write*(self: var HardwareSerial; n: uint8): csize_t
-proc print*(self: var HardwareSerial; s: cstring)
-proc println*(self: var HardwareSerial; s: cstring)
+let Serial* {.importcpp: "Serial".}: HardwareSerial
+proc begin*(self: HardwareSerial, baud: cint)
+proc endproc*(self: HardwareSerial)
+proc ifproc*(self: HardwareSerial): cint
+proc available*(self: HardwareSerial): cint
+proc read*(self: HardwareSerial): cint
+proc write*(self: HardwareSerial, n: uint8): csize_t
+proc print*(self: HardwareSerial, s: cstring)
+proc println*(self: HardwareSerial, s: cstring)
 {.pop.}
 
 {.push importc, header: "Arduino.h".}

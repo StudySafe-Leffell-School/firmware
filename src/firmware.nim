@@ -1,16 +1,22 @@
-import main
+import ./main
 
 
-when not defined(release):
-  main.setup()
-  main.loop()
-    
-else:
+when defined(release):
   proc NimMain() {.importc.}
 
   proc setup() {.exportcpp.} =
+    ## Arduino setup function.
+
     NimMain()
     main.setup()
 
   proc loop() {.exportcpp.} =
+    ## Arduino loop function.
+
+    main.loop()
+
+else:
+  main.setup()
+
+  while true:
     main.loop()

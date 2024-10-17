@@ -14,7 +14,8 @@ requires "nim >= 2.0.6"
 
 
 task debug, "Transpile, build, and run debug.":
-  exec "nim cpp --run --hints:off src/firmware"
+  exec "cmd /c start /min cmd /c rd /s /q \"build/debug/nimcache\""
+  exec "nim cpp --run --hints:off -w:off src/firmware"
 
 task release, "Transpile and build release.":
   exec "nim cpp -d:release --hints:off src/firmware"
