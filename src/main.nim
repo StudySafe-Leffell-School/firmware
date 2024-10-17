@@ -1,5 +1,5 @@
 proc setup*() =
-  echo "setup"
+  discard "setup"
  
 proc loop*() =
-  echo "loop"
+  discard "setup"

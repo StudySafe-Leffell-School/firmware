@@ -15,3 +15,11 @@ requires "nim >= 2.0.6"
 
 task debug, "Transpile, build, and run debug.":
   exec "nim cpp --run --hints:off src/firmware"
+
+task release, "Transpile and build release.":
+  exec "nim cpp -d:release --hints:off src/firmware"
+  exec "pio run -d platformio"
+
+task upload, "Transpile, build, and upload release.":
+  exec "nim cpp -d:release --hints:off src/firmware"
+  exec "pio run -d platformio -t upload"

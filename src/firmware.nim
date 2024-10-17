@@ -6,11 +6,11 @@ when not defined(release):
   main.loop()
     
 else:
-  func NimMain() {.importc.}
+  proc NimMain() {.importc.}
 
-  func setup() {.exportcpp.} =
+  proc setup() {.exportcpp.} =
     NimMain()
     main.setup()
 
-  func loop() {.exportcpp.} =
+  proc loop() {.exportcpp.} =
     main.loop()
