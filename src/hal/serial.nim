@@ -1,4 +1,4 @@
-when defined(release):
+when not defined(debug):
   import ../drivers/core
 
 import ../state
@@ -8,7 +8,7 @@ var globalState {. importcpp: "state", codegenDecl: "extern $# $#" .}: ptr State
 proc isAvailable*(debugResult: bool = true): bool =
   ## Returns true if the serial port is available.
 
-  when defined(release):
+  when not defined(debug):
     result = Serial.ifproc().bool
   else:
     result = debugResult
@@ -16,7 +16,7 @@ proc isAvailable*(debugResult: bool = true): bool =
 proc start*(baud: int) =
   ## Starts the serial port with the specified baud rate.
 
-  when defined(release):
+  when not defined(debug):
     Serial.begin(baud.cint)
   else:
     discard
@@ -24,7 +24,7 @@ proc start*(baud: int) =
 proc stop*() =
   ## Stops the serial port.
 
-  when defined(release):
+  when not defined(debug):
     Serial.endproc()
   else:
     discard
@@ -32,7 +32,7 @@ proc stop*() =
 proc print*(text: string) =
   ## Prints the specified text to the serial port.
 
-  when defined(release):
+  when not defined(debug):
     Serial.print(text.cstring)
   else:
     stdout.write(text)
@@ -42,7 +42,7 @@ proc printOnNewLine*(text: string) =
 
   globalState.data += 1
 
-  when defined(release):
+  when not defined(debug):
     Serial.println(text.cstring)
   else:
     stdout.write(text & "\n")

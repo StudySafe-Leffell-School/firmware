@@ -1,12 +1,6 @@
 --backend:"cpp"
 
-when not defined(release):
-  --nimcache:"./build/debug/nimcache"
-  --outdir:"./build/debug"
-
-else:
-  --nimcache:"./build/release"
-  --outdir:"./build/release"
+when not defined(debug):
   --cpu:esp
   --os:any
   --mm:orc
@@ -17,3 +11,16 @@ else:
   --d:noSignalHandler
   --noMain
   --compileOnly
+
+when defined(release):
+  --nimcache:"./build/release"
+  --outdir:"./build/release"
+
+
+elif defined(simulate):
+  --nimcache:"./build/simulate"
+  --outdir:"./build/simulate"
+
+else:
+  --nimcache:"./build/debug"
+  --outdir:"./build/debug"

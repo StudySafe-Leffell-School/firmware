@@ -1,1 +1,1 @@
-Embedded firmware for device.
+Embedded firmware for StudySafe.

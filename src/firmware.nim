@@ -1,7 +1,7 @@
 import ./main
 
 
-when defined(release):
+when not defined(debug):
   proc NimMain() {.importc.}
 
   proc setup() {.exportcpp.} =
