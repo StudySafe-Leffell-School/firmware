@@ -1,9 +1,6 @@
 when not defined(debug):
-  import ../drivers/core
+  import ./drivers/core
 
-import ../state
-
-var globalState {. importcpp: "state", codegenDecl: "extern $# $#" .}: ptr State
 
 proc isAvailable*(debugResult: bool = true): bool =
   ## Returns true if the serial port is available.
@@ -39,8 +36,6 @@ proc print*(text: string) =
 
 proc printOnNewLine*(text: string) =
   ## Prints the specified text to the serial port followed by a new line.
-
-  globalState.data += 1
 
   when not defined(debug):
     Serial.println(text.cstring)

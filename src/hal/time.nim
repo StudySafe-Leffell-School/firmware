@@ -1,5 +1,5 @@
 when not defined(debug):
-  import ../drivers/core
+  import ./drivers/core
 else:
   import os
 

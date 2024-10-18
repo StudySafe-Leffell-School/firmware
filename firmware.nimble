@@ -23,6 +23,7 @@ task simulate, "Transpile, build, and run simulation.":
   rmDir("build/simulate")
   mkdir("build/simulate")
   mvDir("build/.pio/build/simulate", "build/simulate/build")
+  rmDir("build/.pio")
   exec "wokwi-cli --interactive"
 
 task release, "Transpile and build release.":
@@ -31,10 +32,7 @@ task release, "Transpile and build release.":
   rmDir("build/release")
   mkdir("build/release")
   mvDir("build/.pio/build/release", "build/release/build")
-  exec ("esptool --chip esp32s3 merge_bin -o build/release/build/firmware-merged.bin " &
-        "0x0 build/release/build/bootloader.bin " &
-        "0x8000 build/release/build/partitions.bin " &
-        "0x10000 build/release/build/firmware.bin")
+  rmDir("build/.pio")
 
 task upload, "Upload release to board.":
-    exec "esptool write_flash 0x0 build/release/build/firmware-merged.bin"
+  exec "esptool write_flash 0x0 build/release/build/firmware.bin"
