@@ -10,8 +10,10 @@ import ./hal/nfc
 
 ## Initialize global state variables for FFI.
 
-var globalStateValue: State = State()
-var globalState* {. exportcpp: "state" .}: ptr State = globalStateValue.addr
+var globalStateInstance: State = State()
+var driverCoreInstance: DriverCore = DriverCore()
+var globalState* {. exportcpp: "state" .}: ptr State = globalStateInstance.addr
+globalState.driverCore = driverCoreInstance.addr
 
 
 proc setup*() =
@@ -24,9 +26,11 @@ proc setup*() =
 proc loop*() =
   ## Main loop; repeats indefinitely.
 
-  if nfc.isAvailable():
+  serial.printOnNewLine("I'm still here!")
+
+  #[if nfc.channelIsAvailable(0):
     serial.printOnNewLine("Available.")
   else:
-    serial.printOnNewLine("Unavailable.")
+    serial.printOnNewLine("Unavailable.")]#
 
   time.sleep(1000)

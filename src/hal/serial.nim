@@ -1,43 +1,58 @@
 when not defined(debug):
-  import ./drivers/core
+  import ./drivers/serial
 
 
 proc isAvailable*(debugResult: bool = true): bool =
   ## Returns true if the serial port is available.
 
-  when not defined(debug):
-    result = Serial.ifproc().bool
+  when not defined debug:
+    when defined simulate:
+      result = serial.serial.available().bool
+    else:
+      result = serial.serial1.available().bool
   else:
     result = debugResult
 
-proc start*(baud: int) =
+proc start*() =
   ## Starts the serial port with the specified baud rate.
 
-  when not defined(debug):
-    Serial.begin(baud.cint)
+  when not defined debug:
+    when defined simulate:
+      serial.serial1.begin()
+    else:
+      serial.serial.begin()
   else:
     discard
 
 proc stop*() =
   ## Stops the serial port.
 
-  when not defined(debug):
-    Serial.endproc()
+  when not defined debug:
+    when defined simulate:
+      serial.serial1.endproc()
+    else:
+      serial.serial.endproc()
   else:
     discard
 
 proc print*(text: string) =
   ## Prints the specified text to the serial port.
 
-  when not defined(debug):
-    Serial.print(text.cstring)
+  when not defined debug:
+    when defined simulate:
+      serial.serial1.print(text)
+    else:
+      serial.serial.print(text)
   else:
     stdout.write(text)
 
 proc printOnNewLine*(text: string) =
   ## Prints the specified text to the serial port followed by a new line.
 
-  when not defined(debug):
-    Serial.println(text.cstring)
+  when not defined debug:
+    when defined simulate:
+      serial.serial1.println(text.cstring)
+    else:
+      serial.serial.println(text.cstring)
   else:
     stdout.write(text & "\n")

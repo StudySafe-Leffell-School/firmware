@@ -1,18 +1,3 @@
-{.push importcpp, header: "HardwareSerial.h".}
-type
-  HardwareSerial* {.importcpp: "HardwareSerial".} = object
-
-let Serial* {.importcpp: "Serial".}: HardwareSerial
-proc begin*(self: HardwareSerial, baud: cint)
-proc endproc*(self: HardwareSerial)
-proc ifproc*(self: HardwareSerial): cint
-proc available*(self: HardwareSerial): cint
-proc read*(self: HardwareSerial): cint
-proc write*(self: HardwareSerial, n: uint8): csize_t
-proc print*(self: HardwareSerial, s: cstring)
-proc println*(self: HardwareSerial, s: cstring)
-{.pop.}
-
 {.push importc, header: "Arduino.h".}
 {.push nodecl.}
 let LED_BUILTIN*: uint8

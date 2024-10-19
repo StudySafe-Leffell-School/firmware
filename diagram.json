@@ -4,21 +4,22 @@
   "editor": "wokwi",
   "parts": [
     {
-      "type": "board-esp32-s3-devkitc-1",
-      "id": "esp",
-      "attrs": {"flashSize": "16", "psramSize": "8", "psramType": "octal"}
+      "type": "wokwi-pi-pico-w",
+      "id": "pico"
     }
   ],
   "connections": [
     [
-      "esp:TX",
+      "pico:GP0",
       "$serialMonitor:RX",
-      ""
+      "",
+      []
     ],
     [
-      "esp:RX",
+      "pico:GP1",
       "$serialMonitor:TX",
-      ""
+      "",
+      []
     ]
   ]
 }

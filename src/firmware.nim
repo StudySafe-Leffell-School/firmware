@@ -1,3 +1,5 @@
+{.emit: "#include <Arduino.h>".}
+
 import ./main
 
 

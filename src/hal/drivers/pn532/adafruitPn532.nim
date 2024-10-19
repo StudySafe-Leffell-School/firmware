@@ -1,5 +1,6 @@
 ##  Driver for Adafruit_PN532 library. working with Adafruit PN532 NFC/RFID breakout boards.
 
+import ../wire/wire
 
 const
   PN532_PREAMBLE* = (0x00)      ## < Command sequence start, byte 1/3
@@ -120,20 +121,9 @@ const
 
 
 type
-  AdafruitPN532* {.importcpp: "Adafruit_PN532", header: "adafruit_pn532.h".} = object
-  TwoWire* {.importcpp: "TwoWire", header: "Wire.h".} = object
-    ##  ISO14443A uid
-    ##  uid len
-    ##  Mifare Classic key
-    ##  Tg number of inlisted tag.
-    ##  Low level communication functions that handle both SPI and I2C.
+  AdafruitPN532* {.importcpp: "Adafruit_PN532", header: "adafruit_pn532.h", bycopy.} = object
 
-var Wire* {.importcpp: "Wire", header: "Wire.h".}: TwoWire
-
-proc constructTwoWire*(bus_num: uint8): TwoWire {.constructor, importcpp: "TwoWire(@)", header: "Wire.h".}
-proc constructAdafruitPN532*(irq: uint8; reset: uint8;
-                            theWire: ptr TwoWire
-                            ): AdafruitPN532 {.
+proc constructAdafruitPN532*(irq: uint8, reset: uint8, theWire: ptr TwoWire): AdafruitPN532 {.
     constructor, importcpp: "Adafruit_PN532(@)", header: "adafruit_pn532.h".}
 proc begin*(this: var AdafruitPN532): bool {.importcpp: "begin",
                                         header: "adafruit_pn532.h".}
@@ -144,65 +134,65 @@ proc sAMConfig*(this: var AdafruitPN532): bool {.importcpp: "SAMConfig",
     header: "adafruit_pn532.h".}
 proc getFirmwareVersion*(this: var AdafruitPN532): uint32 {.
     importcpp: "getFirmwareVersion", header: "adafruit_pn532.h".}
-proc sendCommandCheckAck*(this: var AdafruitPN532; cmd: ptr uint8; cmdlen: uint8;
+proc sendCommandCheckAck*(this: var AdafruitPN532, cmd: ptr uint8, cmdlen: uint8,
                          timeout: uint16 = 100): bool {.
     importcpp: "sendCommandCheckAck", header: "adafruit_pn532.h".}
-proc writeGPIO*(this: var AdafruitPN532; pinstate: uint8): bool {.
+proc writeGPIO*(this: var AdafruitPN532, pinstate: uint8): bool {.
     importcpp: "writeGPIO", header: "adafruit_pn532.h".}
 proc readGPIO*(this: var AdafruitPN532): uint8 {.importcpp: "readGPIO",
     header: "adafruit_pn532.h".}
-proc setPassiveActivationRetries*(this: var AdafruitPN532; maxRetries: uint8): bool {.
+proc setPassiveActivationRetries*(this: var AdafruitPN532, maxRetries: uint8): bool {.
     importcpp: "setPassiveActivationRetries", header: "adafruit_pn532.h".}
-proc readPassiveTargetID*(this: var AdafruitPN532; cardbaudrate: uint8;
-                         uid: ptr uint8; uidLength: ptr uint8; timeout: uint16 = 0): bool {.
+proc readPassiveTargetID*(this: var AdafruitPN532, cardbaudrate: uint8,
+                         uid: ptr uint8, uidLength: ptr uint8, timeout: uint16 = 0): bool {.
     importcpp: "readPassiveTargetID", header: "adafruit_pn532.h".}
-proc startPassiveTargetIDDetection*(this: var AdafruitPN532; cardbaudrate: uint8): bool {.
+proc startPassiveTargetIDDetection*(this: var AdafruitPN532, cardbaudrate: uint8): bool {.
     importcpp: "startPassiveTargetIDDetection", header: "adafruit_pn532.h".}
-proc readDetectedPassiveTargetID*(this: var AdafruitPN532; uid: ptr uint8;
+proc readDetectedPassiveTargetID*(this: var AdafruitPN532, uid: ptr uint8,
                                  uidLength: ptr uint8): bool {.
     importcpp: "readDetectedPassiveTargetID", header: "adafruit_pn532.h".}
-proc inDataExchange*(this: var AdafruitPN532; send: ptr uint8; sendLength: uint8;
-                    response: ptr uint8; responseLength: ptr uint8): bool {.
+proc inDataExchange*(this: var AdafruitPN532, send: ptr uint8, sendLength: uint8,
+                    response: ptr uint8, responseLength: ptr uint8): bool {.
     importcpp: "inDataExchange", header: "adafruit_pn532.h".}
 proc inListPassiveTarget*(this: var AdafruitPN532): bool {.
     importcpp: "inListPassiveTarget", header: "adafruit_pn532.h".}
 proc asTarget*(this: var AdafruitPN532): uint8 {.importcpp: "AsTarget",
     header: "adafruit_pn532.h".}
-proc getDataTarget*(this: var AdafruitPN532; cmd: ptr uint8; cmdlen: ptr uint8): uint8 {.
+proc getDataTarget*(this: var AdafruitPN532, cmd: ptr uint8, cmdlen: ptr uint8): uint8 {.
     importcpp: "getDataTarget", header: "adafruit_pn532.h".}
-proc setDataTarget*(this: var AdafruitPN532; cmd: ptr uint8; cmdlen: uint8): uint8 {.
+proc setDataTarget*(this: var AdafruitPN532, cmd: ptr uint8, cmdlen: uint8): uint8 {.
     importcpp: "setDataTarget", header: "adafruit_pn532.h".}
-proc mifareclassicIsFirstBlock*(this: var AdafruitPN532; uiBlock: uint32): bool {.
+proc mifareclassicIsFirstBlock*(this: var AdafruitPN532, uiBlock: uint32): bool {.
     importcpp: "mifareclassic_IsFirstBlock", header: "adafruit_pn532.h".}
-proc mifareclassicIsTrailerBlock*(this: var AdafruitPN532; uiBlock: uint32): bool {.
+proc mifareclassicIsTrailerBlock*(this: var AdafruitPN532, uiBlock: uint32): bool {.
     importcpp: "mifareclassic_IsTrailerBlock", header: "adafruit_pn532.h".}
-proc mifareclassicAuthenticateBlock*(this: var AdafruitPN532; uid: ptr uint8;
-                                    uidLen: uint8; blockNumber: uint32;
-                                    keyNumber: uint8; keyData: ptr uint8): uint8 {.
+proc mifareclassicAuthenticateBlock*(this: var AdafruitPN532, uid: ptr uint8,
+                                    uidLen: uint8, blockNumber: uint32,
+                                    keyNumber: uint8, keyData: ptr uint8): uint8 {.
     importcpp: "mifareclassic_AuthenticateBlock", header: "adafruit_pn532.h".}
-proc mifareclassicReadDataBlock*(this: var AdafruitPN532; blockNumber: uint8;
+proc mifareclassicReadDataBlock*(this: var AdafruitPN532, blockNumber: uint8,
                                 data: ptr uint8): uint8 {.
     importcpp: "mifareclassic_ReadDataBlock", header: "adafruit_pn532.h".}
-proc mifareclassicWriteDataBlock*(this: var AdafruitPN532; blockNumber: uint8;
+proc mifareclassicWriteDataBlock*(this: var AdafruitPN532, blockNumber: uint8,
                                  data: ptr uint8): uint8 {.
     importcpp: "mifareclassic_WriteDataBlock", header: "adafruit_pn532.h".}
 proc mifareclassicFormatNDEF*(this: var AdafruitPN532): uint8 {.
     importcpp: "mifareclassic_FormatNDEF", header: "adafruit_pn532.h".}
-proc mifareclassicWriteNDEFURI*(this: var AdafruitPN532; sectorNumber: uint8;
-                               uriIdentifier: uint8; url: cstring): uint8 {.
+proc mifareclassicWriteNDEFURI*(this: var AdafruitPN532, sectorNumber: uint8,
+                               uriIdentifier: uint8, url: cstring): uint8 {.
     importcpp: "mifareclassic_WriteNDEFURI", header: "adafruit_pn532.h".}
-proc mifareultralightReadPage*(this: var AdafruitPN532; page: uint8; buffer: ptr uint8): uint8 {.
+proc mifareultralightReadPage*(this: var AdafruitPN532, page: uint8, buffer: ptr uint8): uint8 {.
     importcpp: "mifareultralight_ReadPage", header: "adafruit_pn532.h".}
-proc mifareultralightWritePage*(this: var AdafruitPN532; page: uint8; data: ptr uint8): uint8 {.
+proc mifareultralightWritePage*(this: var AdafruitPN532, page: uint8, data: ptr uint8): uint8 {.
     importcpp: "mifareultralight_WritePage", header: "adafruit_pn532.h".}
-proc ntag2xxReadPage*(this: var AdafruitPN532; page: uint8; buffer: ptr uint8): uint8 {.
+proc ntag2xxReadPage*(this: var AdafruitPN532, page: uint8, buffer: ptr uint8): uint8 {.
     importcpp: "ntag2xx_ReadPage", header: "adafruit_pn532.h".}
-proc ntag2xxWritePage*(this: var AdafruitPN532; page: uint8; data: ptr uint8): uint8 {.
+proc ntag2xxWritePage*(this: var AdafruitPN532, page: uint8, data: ptr uint8): uint8 {.
     importcpp: "ntag2xx_WritePage", header: "adafruit_pn532.h".}
-proc ntag2xxWriteNDEFURI*(this: var AdafruitPN532; uriIdentifier: uint8; url: cstring;
+proc ntag2xxWriteNDEFURI*(this: var AdafruitPN532, uriIdentifier: uint8, url: cstring,
                          dataLen: uint8): uint8 {.
     importcpp: "ntag2xx_WriteNDEFURI", header: "adafruit_pn532.h".}
-proc printHex*(data: ptr byte; numBytes: uint32) {.
+proc printHex*(data: ptr byte, numBytes: uint32) {.
     importcpp: "Adafruit_PN532::PrintHex(@)", header: "adafruit_pn532.h".}
-proc printHexChar*(pbtData: ptr byte; numBytes: uint32) {.
+proc printHexChar*(pbtData: ptr byte, numBytes: uint32) {.
     importcpp: "Adafruit_PN532::PrintHexChar(@)", header: "adafruit_pn532.h".}

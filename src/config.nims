@@ -1,7 +1,7 @@
 --backend:"cpp"
 
 when not defined(debug):
-  --cpu:esp
+  --cpu:arm
   --os:any
   --mm:orc
   --opt:speed
