@@ -1,3 +1,5 @@
+## Binding for the Wire.h library.
+
 const
   WIRE_HAS_END* = 1
   WIRE_HAS_BUFFER_SIZE* = 1

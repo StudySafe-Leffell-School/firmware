@@ -1,3 +1,5 @@
+## Driver for Arduino-Core functions.
+
 {.push importc, header: "Arduino.h".}
 {.push nodecl.}
 let LED_BUILTIN*: uint8

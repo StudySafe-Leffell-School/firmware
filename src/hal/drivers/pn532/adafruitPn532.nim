@@ -1,4 +1,4 @@
-##  Driver for Adafruit_PN532 library. working with Adafruit PN532 NFC/RFID breakout boards.
+##  Binding for Adafruit_PN532 library.
 
 import ../wire/wire
 

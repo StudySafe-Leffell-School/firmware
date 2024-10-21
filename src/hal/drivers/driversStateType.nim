@@ -1,3 +1,5 @@
+## Drivers state type definitions.
+
 when not declared(debug):
   import ./pn532/adafruitPn532
 else:

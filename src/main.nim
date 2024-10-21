@@ -1,3 +1,5 @@
+## Main program loop and initialization.
+
 import std/[sugar, sequtils, strformat]
 
 import ./state
@@ -23,9 +25,7 @@ globalStateExport.driversState = driversStateInstance.addr
 
 
 proc mainLoop(previousState: State) =
-  ## Main, top-level looping function.
-
-  #time.sleep(1000)
+  ## Main top-level recursive function - loops indefinitely.
 
   var stateUpdatedSlots = previousState
   stateUpdatedSlots.slots = slot.getUpdatedSlots(previousState.slots)
@@ -36,7 +36,8 @@ proc mainLoop(previousState: State) =
   mainLoop(stateUpdatedSlots)
 
 proc entry*() =
-  ## Entry point for launching mainLoop with correct initialization.
+  ## Entry point for launching mainLoop with proper initialization.
+
   hal.hardwareInit()
 
   serial.start()

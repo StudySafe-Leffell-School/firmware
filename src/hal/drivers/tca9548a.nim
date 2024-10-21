@@ -1,3 +1,5 @@
+## Driver for the TCA9548A 8-channel I2C multiplexer.
+
 import ./wire/wire
 
 proc begin*(): bool {.discardable.} =

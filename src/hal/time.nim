@@ -1,3 +1,5 @@
+## Hardware abstraction layer for time-related functionality.
+
 when not defined(debug):
   import ./drivers/core
 else:

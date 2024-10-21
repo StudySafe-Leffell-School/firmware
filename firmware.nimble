@@ -40,10 +40,19 @@ task upload, "Upload and run release on board.":
 task monitor, "Serial monitor.":
   echo "Serial monitor: " & paramStr(10)
 
-  while true:
-    try:
-      exec "plink -serial " & paramStr(10) & " -sercfg 115200"
-    except:
-      discard
-    echo "\nReconnecting..."
-    exec "cmd /c timeout 1 > nul"
+  when defined(windows):
+    while true:
+      try:
+        exec "plink -serial " & paramStr(10) & " -sercfg 115200"
+      except:
+        discard
+      echo "\nReconnecting..."
+      exec "cmd /c timeout 1 > nul"
+  else:
+    while true:
+      try:
+        exec "screen " & paramStr(10) & " 115200"
+      except:
+        discard
+      echo "\nReconnecting..."
+      exec "sleep 1"

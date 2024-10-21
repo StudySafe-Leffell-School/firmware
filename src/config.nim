@@ -1,3 +1,5 @@
+## System-wide configuration definitions.
+
 import std/sequtils
 
 type NfcConfig* = object

@@ -1,3 +1,5 @@
+## Hardware abstraction layer for serial interfacing.
+
 when not defined(debug):
   import ./drivers/serial
 

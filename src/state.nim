@@ -1,4 +1,4 @@
-import std/options
+## State type definitions.
 
 type
   User* = object

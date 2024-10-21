@@ -1,3 +1,5 @@
+## Entry point for firmware.
+
 {.emit: "#include <Arduino.h>".}
 
 import ./main

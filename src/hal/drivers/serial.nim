@@ -1,3 +1,5 @@
+## Driver for the Arduino-Core Serial library.
+
 {.push header: "Arduino.h".}
 type
   Serial* = object
