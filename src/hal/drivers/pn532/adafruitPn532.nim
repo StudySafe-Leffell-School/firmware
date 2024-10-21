@@ -52,7 +52,7 @@ const
   PN532_SPI_DATAWRITE* = (0x01) ## < Data write
   PN532_SPI_DATAREAD* = (0x03)  ## < Data read
   PN532_SPI_READY* = (0x01)     ## < Ready
-  PN532_I2C_ADDRESS* = (0x48 shr 1) ## < Default I2C address
+  PN532_I2C_ADDRESS* = (0x24) ## < Default I2C address
   PN532_I2C_READBIT* = (0x01)   ## < Read bit
   PN532_I2C_BUSY* = (0x00)      ## < Busy
   PN532_I2C_READY* = (0x01)     ## < Ready
@@ -119,7 +119,6 @@ const
   PN532_GPIO_P34* = (4)         ## < GPIO 34
   PN532_GPIO_P35* = (5)         ## < GPIO 35
 
-
 type
   AdafruitPN532* {.importcpp: "Adafruit_PN532", header: "adafruit_pn532.h", bycopy.} = object
 
@@ -145,6 +144,9 @@ proc setPassiveActivationRetries*(this: var AdafruitPN532, maxRetries: uint8): b
     importcpp: "setPassiveActivationRetries", header: "adafruit_pn532.h".}
 proc readPassiveTargetID*(this: var AdafruitPN532, cardbaudrate: uint8,
                          uid: ptr uint8, uidLength: ptr uint8, timeout: uint16 = 0): bool {.
+    importcpp: "readPassiveTargetID", header: "adafruit_pn532.h".}
+proc readPassiveTargetID*(this: var AdafruitPN532, cardbaudrate: uint8,
+                         uid: ptr cuint, uidLength: ptr cuint, timeout: uint16 = 0): bool {.
     importcpp: "readPassiveTargetID", header: "adafruit_pn532.h".}
 proc startPassiveTargetIDDetection*(this: var AdafruitPN532, cardbaudrate: uint8): bool {.
     importcpp: "startPassiveTargetIDDetection", header: "adafruit_pn532.h".}

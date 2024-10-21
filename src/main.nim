@@ -1,36 +1,55 @@
-import std/strformat
+import std/[sugar, sequtils, strformat]
 
 import ./state
+import ./globalStateType
 
 import ./hal/hal
 import ./hal/serial
 import ./hal/time
 import ./hal/nfc
 
+import ./components/slot
+import ./components/user
+
 
 ## Initialize global state variables for FFI.
 
-var globalStateInstance: State = State()
-var driverCoreInstance: DriverCore = DriverCore()
-var globalState* {. exportcpp: "state" .}: ptr State = globalStateInstance.addr
-globalState.driverCore = driverCoreInstance.addr
+var driversStateInstance: DriversState = DriversState()
+
+var globalStateInstance: GlobalState = GlobalState()
+var globalStateExport* {. exportcpp: "globalState" .}: ptr GlobalState = globalStateInstance.addr
+
+globalStateExport.driversState = driversStateInstance.addr
 
 
-proc setup*() =
-  ## Hardware initialization and setup; runs once on boot.
+proc mainLoop(previousState: State) =
+  ## Main, top-level looping function.
 
-  hal.initAllHardware()
+  #time.sleep(1000)
+
+  var stateUpdatedSlots = previousState
+  stateUpdatedSlots.slots = slot.getUpdatedSlots(previousState.slots)
+
+
+  serial.printOnNewLine(stateUpdatedSlots.dumpToString)
+
+  mainLoop(stateUpdatedSlots)
+
+proc entry*() =
+  ## Entry point for launching mainLoop with correct initialization.
+  hal.hardwareInit()
+
+  serial.start()
 
   serial.printOnNewLine("Hello, World!")
 
-proc loop*() =
-  ## Main loop; repeats indefinitely.
+  let state = State(
+    slots: @[
+      Slot(nfcChannel: 0),
+      Slot(nfcChannel: 1)
+    ]
+  )
 
-  serial.printOnNewLine("I'm still here!")
+  slot.init(state.slots)
 
-  #[if nfc.channelIsAvailable(0):
-    serial.printOnNewLine("Available.")
-  else:
-    serial.printOnNewLine("Unavailable.")]#
-
-  time.sleep(1000)
+  mainLoop(state)

@@ -24,7 +24,7 @@ task simulate, "Transpile, build, and run simulation.":
   mkdir("build/simulate")
   mvDir("build/.pio/build/simulate", "build/simulate/build")
   rmDir("build/.pio")
-  exec "wokwi-cli --interactive"
+  #exec "wokwi-cli --interactive"
 
 task release, "Transpile and build release.":
   rmDir("build/release")
@@ -35,9 +35,7 @@ task release, "Transpile and build release.":
   rmDir("build/.pio")
 
 task upload, "Upload and run release on board.":
-  echo "Copying to \"H:/\'."
-  exec "cmd /c copy build\\release\\build\\firmware.uf2 H:\\firmware.uf2"
-  echo "Done."
+  exec "picotool load -x build/release/build/firmware.uf2"
 
 task monitor, "Serial monitor.":
   echo "Serial monitor: " & paramStr(10)
@@ -47,5 +45,5 @@ task monitor, "Serial monitor.":
       exec "plink -serial " & paramStr(10) & " -sercfg 115200"
     except:
       discard
-    echo "Reconnecting..."
+    echo "\nReconnecting..."
     exec "cmd /c timeout 1 > nul"

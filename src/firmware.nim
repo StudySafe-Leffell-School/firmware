@@ -10,15 +10,11 @@ when not defined(debug):
     ## Arduino setup function.
 
     NimMain()
-    main.setup()
 
   proc loop() {.exportcpp.} =
     ## Arduino loop function.
 
-    main.loop()
+    main.entry()
 
 else:
-  main.setup()
-
-  while true:
-    main.loop()
+  main.entry()

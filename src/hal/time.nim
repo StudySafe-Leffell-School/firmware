@@ -4,7 +4,7 @@ else:
   import os
 
 
-proc sleep*(milliseconds: int) =
+proc sleep*(milliseconds: int): bool {.discardable.} =
   when not defined(debug):
     core.delay(milliseconds.culong)
   else:

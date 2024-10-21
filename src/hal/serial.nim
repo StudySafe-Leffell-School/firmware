@@ -2,7 +2,7 @@ when not defined(debug):
   import ./drivers/serial
 
 
-proc isAvailable*(debugResult: bool = true): bool =
+proc isAvailable*(debugResult: bool = true): bool {.discardable.} =
   ## Returns true if the serial port is available.
 
   when not defined debug:
@@ -13,7 +13,7 @@ proc isAvailable*(debugResult: bool = true): bool =
   else:
     result = debugResult
 
-proc start*() =
+proc start*(): bool {.discardable.} =
   ## Starts the serial port with the specified baud rate.
 
   when not defined debug:
@@ -24,7 +24,7 @@ proc start*() =
   else:
     discard
 
-proc stop*() =
+proc stop*(): bool {.discardable.} =
   ## Stops the serial port.
 
   when not defined debug:
@@ -35,7 +35,7 @@ proc stop*() =
   else:
     discard
 
-proc print*(text: string) =
+proc print*(text: string): bool {.discardable.} =
   ## Prints the specified text to the serial port.
 
   when not defined debug:
@@ -46,7 +46,7 @@ proc print*(text: string) =
   else:
     stdout.write(text)
 
-proc printOnNewLine*(text: string) =
+proc printOnNewLine*(text: string): bool {.discardable.} =
   ## Prints the specified text to the serial port followed by a new line.
 
   when not defined debug:
