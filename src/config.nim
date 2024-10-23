@@ -11,7 +11,7 @@ type
     users*: seq[User]
 
 let generalConfig* = GeneralConfig(
-  slotNfcChannels: (0..2).toSeq(),
+  slotNfcChannels: (0..1).toSeq(),
   users: @[
     User(
       name: "David",

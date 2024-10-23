@@ -1,5 +1,7 @@
 import std/[options]
 
+import ./hal/nfc
+
 
 ## State type definitions.
 
@@ -13,6 +15,7 @@ type
   SlotHardwareData* = object
     nfcId*: Option[int]
     nfcChannel*: int
+    nfcDriver*: NfcDriver
 
   Slot* = object
     ## Contains infromation regarding each slot and their current occupants.
