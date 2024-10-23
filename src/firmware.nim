@@ -1,4 +1,5 @@
-## Entry point for firmware.
+## Entry point for firmware build.
+
 when not defined(debug):
   {.emit: "#include <Arduino.h>".}
 

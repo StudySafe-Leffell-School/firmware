@@ -2,6 +2,8 @@
 
 import std/[options]
 
+import types
+
 when not defined(debug):
   import ./drivers/pn532
   import ./drivers/tca9548a
@@ -9,24 +11,14 @@ when not defined(debug):
 import ./time
 
 
-when not defined(debug):
-  type
-    NfcDriver* = object
-      pn532Driver*: Pn532Driver
-else:
-  type
-    Pn532Driver = object
-    NfcDriver* = object
-      pn532Driver*: Pn532Driver
-
-
-proc makeDriver*(): NfcDriver =
-  ## Initialize the NFC drivers.
+proc makeDevice*(channel: int): NfcDevice =
+  ## Initialize the NFC device and driver.
 
   when not defined(debug):
     result =
-      NfcDriver(
-        pn532Driver: pn532.makeDriver()
+      NfcDevice(
+        driver: pn532.makeDriver(),
+        channel: channel
       )
     tca9548a.begin()
   else:
@@ -35,26 +27,31 @@ proc makeDriver*(): NfcDriver =
         pn532Driver: Pn532Driver()
       )
 
-proc startChannel*(nfcDriver: NfcDriver, channel: int): bool {.discardable.} =
+proc start*(nfcDevice: NfcDevice): bool {.discardable.} =
   ## Start the NFC chip on the specified channel.
 
   when not defined(debug):
-    tca9548a.selectChannel(channel)
+    tca9548a.selectChannel(nfcDevice.channel)
     time.sleep(50)
-    pn532.begin(nfcDriver.pn532Driver)
+    pn532.begin(nfcDevice.driver)
 
-proc isChannelAvailable*(nfcDriver: NfcDriver, channel: int): bool =
+proc isAvailable*(nfcDevice: NfcDevice): bool =
   ## Return true if an NFC chip is available on the specified channel.
 
   when not defined(debug):
-    tca9548a.selectChannel(channel)
-    result = pn532.isAvailable(nfcDriver.pn532Driver)
+    tca9548a.selectChannel(nfcDevice.channel)
+    result = pn532.isAvailable(nfcDevice.driver)
 
-proc readChannelBlocking*(nfcDriver: NfcDriver, channel: int, timeoutMillis: int, debugResult: Option[int] = 1.some): Option[int] =
+proc readChannelBlocking*(nfcDevice: NfcDevice, timeoutMillis: int, debugResult: Option[int] = 1.some): Option[int] =
   ## Read and return a card UID from the NFC chip on the specified channel if present (blocking).
 
   when not defined(debug):
-    tca9548a.selectChannel(channel)
-    result = pn532.readCardUidBlocking(nfcDriver.pn532Driver, timeoutMillis)
+    tca9548a.selectChannel(nfcDevice.channel)
+    result = pn532.readCardUidBlocking(nfcDevice.driver, timeoutMillis)
   else:
     result = debugResult
+
+proc getUpdate*(nfcDevice: NfcDevice): NfcDevice =
+  result = nfcDevice
+  result.readUid = readChannelBlocking(nfcDevice, 50)
+

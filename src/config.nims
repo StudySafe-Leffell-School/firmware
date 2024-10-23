@@ -1,4 +1,5 @@
 --backend:"cpp"
+--path:"."
 
 when not defined(debug):
   --cpu:arm

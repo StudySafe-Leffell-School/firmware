@@ -1,6 +1,9 @@
 ## Driver for PN532 NFC/RFID chips.
 
 import std/options
+
+import types
+
 import ./wire/wire
 import ./pn532/adafruitPn532
 
@@ -8,10 +11,6 @@ import ./pn532/adafruitPn532
 const
   irq = 2
   reset = 3
-
-
-type Pn532Driver* = object
-  driverPointer*: ptr AdafruitPN532
 
 
 proc makeDriver*(): Pn532Driver =

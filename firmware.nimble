@@ -29,10 +29,11 @@ task simulate, "Transpile, build, and run simulation.":
 task release, "Transpile and build release.":
   rmDir("build/release")
   exec "nim cpp -d:release --hints:off -w:off src/firmware"
-  exec "pio run -d platformio -e release"
-  mkdir("build/release")
-  mvDir("build/.pio/build/release", "build/release/build")
-  rmDir("build/.pio")
+  if paramStr(10) != "transpile":
+    exec "pio run -d platformio -e release"
+    mkdir("build/release")
+    mvDir("build/.pio/build/release", "build/release/build")
+    rmDir("build/.pio")
 
 task upload, "Upload and run release on board.":
   exec "picotool load -x build/release/build/firmware.uf2"

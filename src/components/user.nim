@@ -1,8 +1,8 @@
-## Component functions for users.
+## User functions.
 
-import std/[options, sugar, sequtils]
+import std/[options, sequtils]
 
-import ../stateTypes
+import types
 
 
 proc getUserFromUsersByCardId*(users: seq[User], cardId: int): Option[User] =
@@ -21,17 +21,3 @@ proc getUpdatedUser*(slotNfcId: Option[int], users: seq[User]): Option[User] =
 
     if filteredUsers.len > 0:
       result = filteredUsers[0].some()
-
-
-proc getSlotsUpdatedUsers*(slots: seq[Slot], users: seq[User]): seq[Slot] =
-  ## If present, get the users with the specified item IDs from a list of users.
-
-  result = slots
-    .zip(
-      slots.mapIt(
-        getUpdatedUser(it.hardwareData.nfcId, users)
-      )
-    )
-    .map(
-      (x) => (result = x[0]; result.user = x[1])
-    )

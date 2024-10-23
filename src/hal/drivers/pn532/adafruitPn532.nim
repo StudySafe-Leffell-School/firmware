@@ -1,6 +1,9 @@
 ##  Binding for Adafruit_PN532 library.
 
+import types
+
 import ../wire/wire
+
 
 const
   PN532_PREAMBLE* = (0x00)      ## < Command sequence start, byte 1/3
@@ -118,9 +121,6 @@ const
   PN532_GPIO_P33* = (3)         ## < GPIO 33
   PN532_GPIO_P34* = (4)         ## < GPIO 34
   PN532_GPIO_P35* = (5)         ## < GPIO 35
-
-type
-  AdafruitPN532* {.importcpp: "Adafruit_PN532", header: "adafruit_pn532.h", bycopy.} = object
 
 proc constructAdafruitPN532*(irq: uint8, reset: uint8, theWire: ptr TwoWire): AdafruitPN532 {.
     constructor, importcpp: "Adafruit_PN532(@)", header: "adafruit_pn532.h".}
