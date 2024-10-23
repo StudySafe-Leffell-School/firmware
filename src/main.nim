@@ -1,56 +1,82 @@
 ## Main program loop and initialization.
 
-import std/[sugar, sequtils, strformat]
-
-import ./state
-import ./globalStateType
+import std/[sugar, sequtils, strformat, options]
 
 import ./hal/hal
 import ./hal/serial
 import ./hal/time
 import ./hal/nfc
 
-import ./components/slot
-import ./components/user
+import ./components/slots
+import ./components/users
 
+import ./stateTypes
+import ./globalStateType
+
+import ./config
 
 ## Initialize global state variables for FFI.
 
-var driversStateInstance: DriversState = DriversState()
+when not defined(debug):
+  var driversStateInstance: DriversState = DriversState()
 
-var globalStateInstance: GlobalState = GlobalState()
-var globalStateExport* {. exportcpp: "globalState" .}: ptr GlobalState = globalStateInstance.addr
+  var globalStateInstance: GlobalState = GlobalState()
+  var globalStateExport* {. exportcpp: "globalState" .}: ptr GlobalState = globalStateInstance.addr
 
-globalStateExport.driversState = driversStateInstance.addr
+  globalStateExport.driversState = driversStateInstance.addr
 
 
-proc mainLoop(previousState: State) =
+proc mainLoop(statePrevious: State) =
   ## Main top-level recursive function - loops indefinitely.
 
-  var stateUpdatedSlots = previousState
-  stateUpdatedSlots.slots = slot.getUpdatedSlots(previousState.slots)
+  var stateUpdated = statePrevious
 
+  let stateUpdatedSlotsHardwareData: seq[SlotHardwareData] =
+    slots.getSlotHardwareUpdates(statePrevious.slots.mapIt(it.hardwareData))
 
-  serial.printOnNewLine(stateUpdatedSlots.dumpToString)
+  let stateUpdatedSlotsUsers: seq[Option[User]] =
+    users.getUpdatedUsers(
+      stateUpdatedSlotsHardwareData.mapIt(it.nfcId), statePrevious.users)
 
-  mainLoop(stateUpdatedSlots)
+  let stateUpdatedSlots: seq[Slot] =
+    stateUpdatedSlotsUsers.
+    zip(stateUpdatedSlotsHardwareData).
+    mapIt(
+      Slot(
+        user: it[0],
+        hardwareData: it[1]
+      )
+    )
+
+  stateUpdated.slots = stateUpdatedSlots
+
+  time.sleep(500)
+  serial.printOnNewLine(stateUpdated.dumpToString)
+
+  mainLoop(stateUpdated)
 
 proc entry*() =
   ## Entry point for launching mainLoop with proper initialization.
 
-  hal.hardwareInit()
-
-  serial.start()
-
-  serial.printOnNewLine("Hello, World!")
-
-  let state = State(
-    slots: @[
-      Slot(nfcChannel: 0),
-      Slot(nfcChannel: 1)
-    ]
+  let slotsInit: seq[Slot] = generalConfig.slotNfcChannels.mapIt(
+    Slot(
+      hardwareData: SlotHardwareData(
+        nfcChannel: it
+      )
+    )
   )
 
-  slot.init(state.slots)
+  let stateInit: State = State(
+    slots: slotsInit,
+    users: generalConfig.users
+  )
 
-  mainLoop(state)
+  hal.hardwareInit()
+  serial.start()
+  slots.start(slotsInit)
+
+  time.sleep(5000)
+
+  serial.printOnNewLine($slotsInit.mapIt(nfc.isChannelAvailable(it.hardwareData.nfcChannel)))
+
+  mainLoop(stateInit)

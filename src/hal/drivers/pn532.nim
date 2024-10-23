@@ -57,8 +57,6 @@ proc readCardUidBlocking*(timeoutMillis: int): Option[int] =
 
   if success:
     result = (uid[].int).some
-  else:
-    result = int.none()
 
   uid.dealloc()
   uidLength.dealloc()

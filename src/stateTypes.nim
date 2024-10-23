@@ -1,3 +1,6 @@
+import std/[options]
+
+
 ## State type definitions.
 
 type
@@ -7,12 +10,16 @@ type
     cardId*: int
     itemId*: int
 
+  SlotHardwareData* = object
+    nfcId*: Option[int]
+    nfcChannel*: int
+
   Slot* = object
     ## Contains infromation regarding each slot and their current occupants.
-    occupied*: bool
-    nfcId*: int
-    nfcChannel*: int
+    hardwareData*: SlotHardwareData
+    user*: Option[User]
 
   State* = object
     ## Contains information regarding the system's current state.
     slots*: seq[Slot]
+    users*: seq[User]

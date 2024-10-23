@@ -1,1 +1,0 @@
-## Component functions for users.

@@ -24,7 +24,7 @@ task simulate, "Transpile, build, and run simulation.":
   mkdir("build/simulate")
   mvDir("build/.pio/build/simulate", "build/simulate/build")
   rmDir("build/.pio")
-  #exec "wokwi-cli --interactive"
+  exec "wokwi-cli --interactive"
 
 task release, "Transpile and build release.":
   rmDir("build/release")

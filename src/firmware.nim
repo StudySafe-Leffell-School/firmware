@@ -1,6 +1,6 @@
 ## Entry point for firmware.
-
-{.emit: "#include <Arduino.h>".}
+when not defined(debug):
+  {.emit: "#include <Arduino.h>".}
 
 import ./main
 
