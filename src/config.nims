@@ -1,10 +1,10 @@
 --backend:"cpp"
 --path:"."
+--mm:orc
 
-when not defined(debug):
+when not defined(host):
   --cpu:arm
   --os:any
-  --mm:orc
   --opt:speed
   --stacktrace:off
   --threads:off
@@ -13,15 +13,14 @@ when not defined(debug):
   --noMain
   --compileOnly
 
-when defined(release):
-  --nimcache:"./build/release"
-  --outdir:"./build/release"
+  when defined(debug):
+    --nimcache:"../build/debug"
+    --outdir:"./build/debug"
 
-
-elif defined(simulate):
-  --nimcache:"./build/simulate"
-  --outdir:"./build/simulate"
+  else:
+    --nimcache:"../build/release"
+    --outdir:"./build/release"
 
 else:
-  --nimcache:"./build/debug"
-  --outdir:"./build/debug"
+  --nimcache:"../build/host"
+  --outdir:"./build/host"

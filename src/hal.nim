@@ -1,2 +1,2 @@
-import hal/[nfc, serial, time]
-export nfc, serial, time
+import ./hal/public
+export public

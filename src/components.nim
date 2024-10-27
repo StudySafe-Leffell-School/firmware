@@ -1,2 +1,2 @@
-import ./components/[config, slot, user]
-export config, slot, user
+import ./components/public
+export public

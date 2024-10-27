@@ -2,5 +2,5 @@
 # Reference: https://docs.wokwi.com/vscode/project-config
 [wokwi]
 version = 1
-firmware = 'build/release/build/firmware.uf2'
-elf = 'build/release/build/firmware.elf'
+firmware = 'build/.pio/build/debug/firmware.uf2'
+elf = 'build/.pio/build/debug/firmware.elf'

@@ -4,54 +4,74 @@ import std/[options]
 
 import types
 
-when not defined(debug):
-  import ./drivers/pn532
+when not defined(host):
+  import ./drivers/adafruitPn532
   import ./drivers/tca9548a
+  import ./drivers/wire
 
 import ./time
 
 
+
 proc makeDevice*(channel: int): NfcDevice =
   ## Initialize the NFC device and driver.
+  when not defined(host):
+    var adafruitPn532Driver = cast[ptr AdafruitPN532](alloc0(sizeof(AdafruitPN532)))
+    adafruitPn532Driver[] = constructAdafruitPn532(100, 100, wire.wire.addr)
 
-  when not defined(debug):
+    let driver = Pn532Driver(
+      driverPointer: adafruitPn532Driver
+    )
+
     result =
       NfcDevice(
-        driver: pn532.makeDriver(),
-        channel: channel
-      )
+        driver: driver,
+        channel: channel)
+
     tca9548a.begin()
   else:
     result =
-      NfcDriver(
-        pn532Driver: Pn532Driver()
+      NfcDevice(
+        driver: Pn532Driver()
       )
 
 proc start*(nfcDevice: NfcDevice): bool {.discardable.} =
   ## Start the NFC chip on the specified channel.
-
-  when not defined(debug):
+  when not defined(host):
     tca9548a.selectChannel(nfcDevice.channel)
     time.sleep(50)
-    pn532.begin(nfcDevice.driver)
+    discard nfcDevice.driver.driverPointer[].begin()
+  else:
+    time.sleep(50)
 
 proc isAvailable*(nfcDevice: NfcDevice): bool =
-  ## Return true if an NFC chip is available on the specified channel.
-
-  when not defined(debug):
+  ## Return true if an NFC chip is available at the specified channel.
+  when not defined(host):
     tca9548a.selectChannel(nfcDevice.channel)
-    result = pn532.isAvailable(nfcDevice.driver)
+    let firmwareVersion: uint32 = nfcDevice.driver.driverPointer[].getFirmwareVersion()
 
-proc readChannelBlocking*(nfcDevice: NfcDevice, timeoutMillis: int, debugResult: Option[int] = 1.some): Option[int] =
-  ## Read and return a card UID from the NFC chip on the specified channel if present (blocking).
+    if firmwareVersion > 0:
+      result = true
 
-  when not defined(debug):
+proc getReadChannelBlocking*(nfcDevice: NfcDevice, timeoutMillis: int, debugResult: Option[int] = 1.some): Option[int] =
+  ## Read and return an NFC tag UID on specified channel if a tag in-field. This function is blocking; set timeoutMillis.
+  when not defined(host):
     tca9548a.selectChannel(nfcDevice.channel)
-    result = pn532.readCardUidBlocking(nfcDevice.driver, timeoutMillis)
+    var uidBuffer: ptr uint8 = cast[ptr uint8](alloc0(sizeof(uint8)))
+    var uidLengthBuffer: ptr uint8 = cast[ptr uint8](alloc0((sizeof(uint8))))
+
+    let success: bool =  nfcDevice.driver.driverPointer[].readPassiveTargetID(adafruitPn532.PN532_MIFARE_ISO14443A, uidBuffer, uidLengthBuffer, timeoutMillis.uint8)
+
+    if success:
+      result = (uidBuffer[].int).some
+
+    uidBuffer.dealloc()
+    uidLengthBuffer.dealloc()
   else:
+    time.sleep(timeoutMillis)
     result = debugResult
 
 proc getUpdate*(nfcDevice: NfcDevice): NfcDevice =
+  ## Update and return the current state of an NFC device.
   result = nfcDevice
-  result.readUid = readChannelBlocking(nfcDevice, 50)
-
+  result.readUid = getReadChannelBlocking(nfcDevice, 50)

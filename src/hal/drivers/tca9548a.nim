@@ -1,11 +1,15 @@
-## Driver for the TCA9548A 8-channel I2C multiplexer.
+## Driver for TCA9548A 8-channel I2C multiplexer.
+## Driver for TCA9548A 8-channel I2C multiplexer.
 
-import ./wire/wire
+import ./wire
+import config
 
 proc begin*(): bool {.discardable.} =
-  discard wire.wire.begin()
+  discard wire.wire.setSda(config.i2cMuxSda.cint)
+  discard wire.wire.setScl(config.i2cMuxScl.cint)
+  wire.wire.begin()
 
 proc selectChannel*(channel: int): bool {.discardable.} =
-  wire.wire.beginTransmission(0x70.uint8)
+  wire.wire.beginTransmission(config.i2cMuxAddress.uint8)
   discard wire.wire.write(channel+1)
   discard wire.wire.endTransmission()

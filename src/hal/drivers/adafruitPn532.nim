@@ -1,8 +1,8 @@
-##  Binding for Adafruit_PN532 library.
+## Bindings for Adafruit_PN532 driver library.
 
 import types
 
-import ../wire/wire
+import ./wire
 
 
 const
@@ -122,7 +122,7 @@ const
   PN532_GPIO_P34* = (4)         ## < GPIO 34
   PN532_GPIO_P35* = (5)         ## < GPIO 35
 
-proc constructAdafruitPN532*(irq: uint8, reset: uint8, theWire: ptr TwoWire): AdafruitPN532 {.
+proc constructAdafruitPn532*(irq: uint8, reset: uint8, theWire: ptr TwoWire): AdafruitPN532 {.
     constructor, importcpp: "Adafruit_PN532(@)", header: "adafruit_pn532.h".}
 proc begin*(this: var AdafruitPN532): bool {.importcpp: "begin",
                                         header: "adafruit_pn532.h".}

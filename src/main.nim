@@ -1,65 +1,39 @@
-## Main app loop and initialization.
-
-import std/[sugar, sequtils]
+## Main app loop and entry point.
 
 import types
 import components
+import config
+import monad
 
 import ./hal/serial
 import ./hal/time
 
-import ./state
 
+proc mainLoop(statePrevious: State): State =
+  ## Main top-level function - to be called in a loop indefinitely.
 
+  result = monad.make(statePrevious)
+    .replaceIt(
+      it.slots, slot.getUpdatedSlots(it.slots, it.users))
+    .get()
 
-proc getUpdatedSlots(stateSlots: seq[Slot], stateUsers: seq[User]): seq[Slot] =
-  ## Return updated sequence of slot.
-
-  let slotsUpdatedHardwareData: seq[Slot] = slot.getHardwareUpdates(stateSlots)
-  let slotsUpdatedUsers: seq[Slot] = slot.getUserUpdates(slotsUpdatedHardwareData, stateUsers)
-
-  result = slotsUpdatedUsers
-
-proc mainLoop(statePrevious: State) =
-  ## Main top-level recursive function - loops indefinitely.
-
-  var stateUpdated = statePrevious
-
-  stateUpdated.slots = getUpdatedSlots(statePrevious.slots, statePrevious.users)
+  serial.printOnNewLine($result.slots)
 
   time.sleep(500)
-  serial.printOnNewLine(stateUpdated.slots.dumpToString)
 
-  mainLoop(stateUpdated)
 
 proc entry*() =
-  ## Entry point for launching mainLoop with proper initialization.
+  ## Entry point for launching `mainLoop` with proper initialization.
 
-  let configInit: Config = config.makeConfig()
-
-  let usersInit: seq[User] =
-    @[
-      User(
-        name: "David",
-        cardId: 19,
-        itemId: 55
-      ),
-      User(
-        name: "Jakey",
-        cardId: 83,
-        itemId: 33
-      ),
-      User(
-        name: "Liel",
-        cardId: 46,
-        itemId: 11
-      )
-    ]
-
-  let slotsInit: seq[Slot] = slot.makeSlots(configInit.slotNfcChannels)
-
-  let stateInit: State = makeState(configInit, usersInit, slotsInit)
+  let slotsInit: seq[Slot] = slot.makeSlots(config.slotNfcChannels)
+  let stateInit: State = makeState(config.usersInit, slotsInit)
 
   serial.start()
 
-  mainLoop(stateInit)
+  var state: State = stateInit
+  while true:
+    ## Unfortunately, due to the constrained hardware of microcontrollers, functional-style
+    ## recursion is rendered unfeasable due to memory and recrsion depth issues. In this case,
+    ## a `while` loop serves a suitable replacement.
+
+    state = mainLoop(state)
