@@ -1,4 +1,4 @@
-## Hardware abstraction layer for time-related functionality.
+## Hardware abstraction for time-related functions.
 
 when not defined(host):
   import ./drivers/core

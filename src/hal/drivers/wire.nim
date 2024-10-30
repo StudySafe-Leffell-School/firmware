@@ -9,11 +9,11 @@ type
 
 proc begin*(this: var TwoWire) {.importcpp: "begin".}
 proc begin*(this: var TwoWire; address: uint8) {.importcpp: "begin".}
-proc `end`*(this: var TwoWire) {.importcpp: "end".}
-proc setSDA*(this: var TwoWire; sda: PinSizeT): bool {.importcpp: "setSDA".}
-proc setSCL*(this: var TwoWire; scl: PinSizeT): bool {.importcpp: "setSCL".}
-proc setSDA*(this: var TwoWire; sda: cint): bool {.importcpp: "setSDA".}
-proc setSCL*(this: var TwoWire; scl: cint): bool {.importcpp: "setSCL".}
+proc endProc*(this: var TwoWire) {.importcpp: "end".}
+proc setSda*(this: var TwoWire; sda: PinSizeT): bool {.importcpp: "setSDA".}
+proc setScl*(this: var TwoWire; scl: PinSizeT): bool {.importcpp: "setSCL".}
+proc setSda*(this: var TwoWire; sda: cint): bool {.importcpp: "setSDA".}
+proc setScl*(this: var TwoWire; scl: cint): bool {.importcpp: "setSCL".}
 proc setClock*(this: var TwoWire; freqHz: uint32) {.importcpp: "setClock".}
 proc beginTransmission*(this: var TwoWire; a2: uint8) {.
     importcpp: "beginTransmission".}
@@ -55,7 +55,7 @@ proc setTimeout*(this: var TwoWire; timeout: uint32 = 25; resetWithTimeout: bool
     importcpp: "setTimeout".}
 proc getTimeoutFlag*(this: var TwoWire): bool {.importcpp: "getTimeoutFlag".}
 proc clearTimeoutFlag*(this: var TwoWire) {.importcpp: "clearTimeoutFlag".}
-proc onIRQ*(this: var TwoWire) {.importcpp: "onIRQ".}
+proc onIrq*(this: var TwoWire) {.importcpp: "onIRQ".}
 var wire* {.importcpp: "Wire".}: TwoWire
 var wire1* {.importcpp: "Wire1".}: TwoWire
 {.pop.}

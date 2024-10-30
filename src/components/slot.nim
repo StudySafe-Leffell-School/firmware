@@ -3,15 +3,10 @@
 import std/[options, sequtils]
 
 import hal
-import monad
 import user
 import types
+import chain
 
-
-proc start(slot: Slot): bool {.discardable.} =
-  ## Start a slot.
-
-  nfc.start(slot.hardwareData.nfcDevice)
 
 proc isAvailable*(slot: Slot): bool =
   ## Returns true if given slot is available.
@@ -30,7 +25,8 @@ proc makeSlot(channel: int): Slot =
 proc makeSlots*(channels: seq[int]): seq[Slot] =
   ## Start and return a sequence of slots on the provided NFC channels.
   result = channels.map(makeSlot)
-  discard result.map(start)
+
+  discard result.mapIt(nfc.start(it.hardwareData.nfcDevice))
 
 proc getHardwareUpdate(slot: Slot): Slot =
   ## Update and return the current state of the hardware of a slot.
@@ -48,11 +44,9 @@ proc getUserUpdate(slot: Slot, users: seq[User]): Slot =
     result.user = user.getUserFromUsersByItemId(readUid.get(), users)
 
 proc getUpdatedSlot*(slot: Slot, users: seq[User]): Slot =
-  result =
-    monad.make(slot)
-      .chain(getHardwareUpdate)
-      .chainIt(getUserUpdate(it, users))
-      .get()
+  result = chainIt(slot):
+    getHardwareUpdate(it)
+    getUserUpdate(it, users)
 
 proc getUpdatedSlots*(slots: seq[Slot], users: seq[User]): seq[Slot] =
   ## Update and return the current state of a sequence of slots.

@@ -8,9 +8,10 @@ const i2cMuxSda* = 16
 const i2cMuxScl* = 17
 const i2cMuxAddress* = 0x70
 
-const slotNfcChannels* = (0..2).toSeq()
+const slotNfcChannels* = (0..1).toSeq()
 
-const usersInit* = @[
+const usersInit* =
+  @[
     User(
       name: "David",
       cardId: 209,

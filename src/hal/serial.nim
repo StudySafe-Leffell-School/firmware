@@ -1,11 +1,11 @@
-## Hardware abstraction layer for serial interfacing.
+## Hardware abstraction for serial communication.
 
 when not defined(host):
   import ./drivers/core
 
 
 proc isAvailable*(debugResult: bool = true): bool {.discardable.} =
-  ## Returns true if the serial port is available.
+  ## Return true if the serial interface is available.
 
   when not defined(host):
     result = core.serial1.available().bool
@@ -13,7 +13,7 @@ proc isAvailable*(debugResult: bool = true): bool {.discardable.} =
     result = debugResult
 
 proc start*(baudRate: int = 9600): bool {.discardable.} =
-  ## Starts the serial port with the specified baud rate.
+  ## Start the serial interface with the specified baud rate.
 
   when not defined(host):
     core.serial1.begin(baudRate.culong)
@@ -21,7 +21,7 @@ proc start*(baudRate: int = 9600): bool {.discardable.} =
     discard
 
 proc stop*(): bool {.discardable.} =
-  ## Stops the serial port.
+  ## Stop the serial interface.
 
   when not defined(host):
     core.serial1.endproc()
@@ -29,7 +29,7 @@ proc stop*(): bool {.discardable.} =
     discard
 
 proc print*(text: string): bool {.discardable.} =
-  ## Prints the specified text to the serial port.
+  ## Print the specified text to the serial interface.
 
   when not defined(host):
     core.serial1.print(text)
@@ -37,7 +37,7 @@ proc print*(text: string): bool {.discardable.} =
     stdout.write(text)
 
 proc printOnNewLine*(text: string): bool {.discardable.} =
-  ## Prints the specified text to the serial port followed by a new line.
+  ## Print the specified text to the serial interface, followed by a new line.
 
   when not defined(host):
     core.serial1.println(text.cstring)

@@ -14,13 +14,13 @@ when not defined(host):
   --compileOnly
 
   when defined(debug):
-    --nimcache:"../build/debug"
+    --nimcache:"./build/debug"
     --outdir:"./build/debug"
 
   else:
-    --nimcache:"../build/release"
+    --nimcache:"./build/release"
     --outdir:"./build/release"
 
 else:
-  --nimcache:"../build/host"
+  --nimcache:"./build/host"
   --outdir:"./build/host"
