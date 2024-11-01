@@ -13,10 +13,10 @@ when not defined(host):
   proc setup() {.exportcpp.} =
     ## Arduino setup function.
     NimMain()
+    main.entry()
 
   proc loop() {.exportcpp.} =
     ## Arduino loop function.
-    main.entry()
 
 else:
   main.entry()

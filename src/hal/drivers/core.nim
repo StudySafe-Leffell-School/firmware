@@ -53,7 +53,9 @@ proc write*(this: var Serial; p: ptr uint8; len: csize_t): csize_t {.importcpp: 
 proc print*(this: var Serial, s: cstring) {.importcpp: "print".}
 proc println*(this: var Serial, s: cstring) {.importcpp: "println".}
 
-var serial* {.importcpp: "Serial", nodecl.}: Serial
-var serial1* {.importcpp: "Serial1", nodecl.}: Serial
+{.push nodecl.}
+var serial* {.importcpp: "Serial".}: Serial
+var serial1* {.importcpp: "Serial1".}: Serial
+{.pop.}
 
 {.pop.}
