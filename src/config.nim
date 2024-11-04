@@ -9,6 +9,7 @@ const i2cMuxScl* = 17
 const i2cMuxAddress* = 0x70
 
 const slotNfcChannels* = (0..1).toSeq()
+const userReaderNfcChannel* = 7
 
 const usersInit* =
   @[

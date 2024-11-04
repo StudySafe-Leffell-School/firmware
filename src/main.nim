@@ -1,5 +1,4 @@
 ## Main app loop and entry point.
-
 import types
 import components
 import config
@@ -13,18 +12,20 @@ proc tick(statePrevious: State): State =
   ## Main top-level function - to be called in a loop indefinitely.
   result = chainIt(statePrevious):
     it.replace(slots, slot.getUpdatedSlots(it.slots, it.users))
+    it.replace(userReader, userReader.getUpdatedUserReader(it.userReader, it.users))
 
   serial.printOnNewLine($result.slots)
 
   time.sleep(500)
 
 proc entry*() =
-  ## Entry point for looping `tick` with proper initialization.
+  ## Entry point for starting looped ticking with proper initialization.
   serial.start()
   serial.printOnNewLine("Alive.")
 
   let slotsInit: seq[Slot] = slot.makeSlots(config.slotNfcChannels)
-  let stateInit: State = makeState(config.usersInit, slotsInit)
+  let userReaderInit: UserReader = userReader.makeReader(config.userReaderNfcChannel)
+  let stateInit: State = state.makeState(config.usersInit, slotsInit, userReaderInit)
 
   var state: State = stateInit
   while true:

@@ -36,7 +36,18 @@ type
     hardwareData*: SlotHardwareData
     user*: Option[User]
 
+  UserReaderHardwareData* = object
+    ## Contains information about the hardware of a user identification reader.
+    nfcDevice*: NfcDevice
+
+  UserReader* = object
+    ## Contains information about a user identification reader.
+    hardwareData*: UserReaderHardwareData
+    user*: Option[User]
+
   State* = object
-    ## Contains information about the global current state.
-    slots*: seq[Slot]
+    ## Contains information about the current global state.
     users*: seq[User]
+    slots*: seq[Slot]
+    userReader*: UserReader
+    currentUser*: Option[User]

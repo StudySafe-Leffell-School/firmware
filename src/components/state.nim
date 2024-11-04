@@ -2,10 +2,11 @@
 
 import types
 
-proc makeState*(usersInit: seq[User], slotsInit: seq[Slot]): State =
+proc makeState*(usersInit: seq[User], slotsInit: seq[Slot], userReaderInit: UserReader): State =
   ## Return a new State object.
   result =
     State(
       users: usersInit,
-      slots: slotsInit
+      slots: slotsInit,
+      userReader: userReaderInit
     )

@@ -1,8 +1,9 @@
 ## User functions.
 
-import std/[options, sequtils]
+import std/[sugar, options, sequtils]
 
 import types
+import chain
 
 
 proc getUserFromUsersByCardId*(cardId: int, users: seq[User]): Option[User] =
@@ -18,3 +19,7 @@ proc getUserFromUsersByItemId*(itemId: int, users: seq[User]): Option[User] =
 
   if filteredUsers.len > 0:
     result = filteredUsers[0].some()
+
+proc isUserInSlots*(user: User, slots: seq[Slot]): bool =
+
+  result = slots.filterIt(it.user == user.some()).len() > 0
