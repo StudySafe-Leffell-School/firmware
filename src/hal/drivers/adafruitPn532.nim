@@ -4,7 +4,7 @@ import types
 
 import ./wire
 
-{.push header: "adafruit_pn532.h".}
+{.push header: "Adafruit_PN532.h".}
 proc constructAdafruitPn532*(irq: uint8, reset: uint8, theWire: ptr TwoWire): AdafruitPN532 {.
     constructor, importcpp: "Adafruit_PN532(@)".}
 proc begin*(this: var AdafruitPN532): bool {.importcpp: "begin".}

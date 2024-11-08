@@ -3,7 +3,7 @@ import std/options
 
 when not defined(host):
   type
-    AdafruitPN532* {.importcpp: "Adafruit_PN532", header: "adafruit_pn532.h", bycopy.} = object
+    AdafruitPN532* {.importcpp: "Adafruit_PN532", header: "Adafruit_PN532.h", bycopy.} = object
 else:
   type
     AdafruitPN532* = object
